@@ -51,23 +51,5 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     }
-  },
-  "parameters": {
-    "AMPLIFY_function_secureDeployBucket_deploymentBucketName": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "secureDeployBucket"
-        }
-      ]
-    },
-    "AMPLIFY_function_secureDeployBucket_s3Key": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "secureDeployBucket"
-        }
-      ]
-    }
   }
 }
