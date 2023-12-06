@@ -14,9 +14,11 @@ export function useCornerstone() {
     function enableCornerstone(imageBoxElement, cornerstoneEventHandlers) {
         cornerstone.enable(imageBoxElement);
         cornerstoneTools.addTool(cornerstoneTools.StackScrollTool);
+        cornerstoneTools.addTool(cornerstoneTools.StackScrollMouseWheelTool);
         cornerstoneTools.addTool(cornerstoneTools.ZoomTool);
-        cornerstoneTools.addTool(cornerstoneTools.WwwcTool);
-        cornerstoneTools.setToolActive('Wwwc', { mouseButtonMask: 2 });
+        cornerstoneTools.addTool(cornerstoneTools.WwwcTool); // same as WindowLevelTool
+        cornerstoneTools.addTool(cornerstoneTools.PanTool);
+        cornerstoneTools.setToolActive('Wwwc', { mouseButtonMask: 2 });  // contrast change on right click
         cornerstone.events.addEventListener(
             'cornerstoneimageloaded',
             cornerstoneEventHandlers.handleCornerstoneImageLoaded

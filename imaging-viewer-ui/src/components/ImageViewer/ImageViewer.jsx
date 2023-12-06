@@ -1,4 +1,6 @@
 import { useState, useEffect, useContext, useMemo, useCallback, useRef } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMagnifyingGlass, faUpDownLeftRight } from '@fortawesome/free-solid-svg-icons';
 
 // Context
 import { AppContext } from '../App';
@@ -56,6 +58,10 @@ export default function ImageViewer() {
     const [imageLoading, setImageLoading] = useState(false);
     // ImageSet metadata object
     const [imageSetMetadata, setImageSetMetadata] = useState({});
+
+    // State to store the selected tool
+    const [selectedTool, setSelectedTool] = useState('Zoom');
+
     // Datastore select and ImageSet input
     const {
         errorText,
@@ -342,14 +348,18 @@ export default function ImageViewer() {
                         type: 'error',
                     });
                 });
-            cornerstoneTools.setToolActive('StackScroll', { mouseButtonMask: 1 });
-            cornerstoneTools.setToolActive('Zoom', { mouseButtonMask: 4 });
+            // cornerstoneTools.setToolActive('StackScroll', { mouseButtonMask: 1 });  // scroll through images on left click
+            // cornerstoneTools.setToolActive('Zoom', { mouseButtonMask: 4 });  // zoom on middle click
+            // cornerstoneTools.setToolActive('Pan', { mouseButtonMask: 1 });  // move the image on left click
+
+            cornerstoneTools.setToolActive('StackScrollMouseWheel', {});  // scroll through images on mouse wheel scroll
+            cornerstoneTools.setToolActive('Zoom', { mouseButtonMask: 1 });
         } else {
             cornerstone.loadAndCacheImage(imageIds[0]).then((image) => {
                 cornerstone.displayImage(elem, image);
                 cornerstone.reset(elem);
             });
-            cornerstoneTools.setToolActive('Zoom', { mouseButtonMask: 1 });
+            cornerstoneTools.setToolActive('Zoom', { mouseButtonMask: 1 });  // zoom left click
         }
         setImageLoading(false);
     }
@@ -382,6 +392,17 @@ export default function ImageViewer() {
             imageLoader.resetWorkers();
         };
     }, []);
+
+    const selectTool = (tool) => {
+        if (selectedTool !== tool) {
+            setSelectedTool(tool);
+        }
+    }
+
+    useEffect(() => {
+        console.log(selectedTool);
+        cornerstoneTools.setToolActive(selectedTool, { mouseButtonMask: 1 });
+    }, [selectedTool]);
 
     return (
         <ContentLayout
@@ -478,9 +499,25 @@ export default function ImageViewer() {
             <Container>
                 <Metrics />
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'row', gap: '5px' }}>
+                        <button 
+                            style={{ backgroundColor: 'white', color: selectedTool === 'Zoom' ? '#1063B1' : '#539FE5', border: 'none' }}
+                            onClick={() => selectTool('Zoom')}
+                            title='Zoom'
+                        >
+                            <FontAwesomeIcon icon={faMagnifyingGlass} size='xl' />
+                        </button>
+                        <button 
+                            style={{ backgroundColor: 'white', color: selectedTool === 'Pan' ? '#1063B1' : '#539FE5' , border: 'none' }}
+                            onClick={() => selectTool('Pan')}
+                            title='Pan'
+                        >
+                            <FontAwesomeIcon icon={faUpDownLeftRight} size='xl' />
+                        </button>
+                    </div>
                     <div
                         ref={imageBoxRef}
-                        style={{ aspectRatio: '1 / 1', width: '100%' }}
+                        style={{ aspectRatio: '3 / 2', width: '100%' }}
                         onContextMenu={(e) => e.preventDefault()}
                         onMouseDown={(e) => e.preventDefault()}
                     />
